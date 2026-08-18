@@ -12,7 +12,7 @@ generator client {
 // then run `wasp db studio` to open Prisma Studio and view your db models.
 model User {
   id       String @id @default(uuid())
-  username String
+  username String?
 
   tasks Task[]
   tags  Tag[]

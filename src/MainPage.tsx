@@ -1,8 +1,10 @@
 import type { ChangeEvent } from "react";
+import type { AuthUser } from "wasp/auth";
+import { logout } from "wasp/client/auth";
 import type { Task } from "wasp/entities";
 import { updateTask, createTask, getTasks, useQuery } from "wasp/client/operations"
 
-export const MainPage = () => {
+export const MainPage = ({ user }: { user: AuthUser }) => {
     const { data: tasks, isLoading, error } = useQuery(getTasks);
 
     return (
@@ -12,6 +14,8 @@ export const MainPage = () => {
 
             {isLoading && "Loading..."}
             {error && "Error: " + error}
+
+            <button onClick={logout}>Logout</button>
         </div>
     );
 };
