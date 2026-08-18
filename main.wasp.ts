@@ -1,60 +1,31 @@
-import { app, page, route } from "@wasp.sh/spec";
-import { App } from "./src/App" with { type: "ref" };
-import { EmailVerificationPage } from "./src/auth/email/EmailVerificationPage" with { type: "ref" };
-import { LoginPage } from "./src/auth/email/LoginPage" with { type: "ref" };
-import { PasswordResetPage } from "./src/auth/email/PasswordResetPage" with { type: "ref" };
-import { RequestPasswordResetPage } from "./src/auth/email/RequestPasswordResetPage" with { type: "ref" };
-import { SignupPage } from "./src/auth/email/SignupPage" with { type: "ref" };
-import { userSignupFields } from "./src/auth/email/userSignupFields" with { type: "ref" };
-import { tagsSpec } from "./src/tags/tags.wasp";
-import { tasksSpec } from "./src/tasks/task.wasp";
+import { action, app, page, route, query } from "@wasp.sh/spec"
+import { MainPage } from "./src/MainPage" with { type: "ref" }
+import { getTasks } from "../parth-journey-wasp/src/queries" with {type: "ref"}
+import { createTask, updateTask } from "./src/actions" with {type: "ref"}
+import { SignupPage } from "./src/SignupPage" with { type: "ref" }
+import { LoginPage } from "./src/LoginForm" with { type: "ref" }
 
 export default app({
-  name: "parthJourneyWasp",
-  wasp: { version: "^0.25.0" },
-  title: "parth-journey-wasp",
-  head: ["<link rel='icon' href='/favicon.ico' />"],
-  auth: {
-    userEntity: "User",
-    methods: {
-      email: {
-        fromField: {
-          name: "Basic App",
-          email: "hello@example.com",
+    name: "parthJourneyWasp",
+    wasp: { version: "^0.25.0" },
+    title: "Parth's Journey with Wasp",
+    head: ["<link rel='icon' href='/favicon.ico' />"],
+    auth: {
+        userEntity: "User",
+        methods: {
+            usernameAndPassword: {},
         },
-        userSignupFields,
-        emailVerification: {
-          clientRoute: "EmailVerificationRoute",
-        },
-        passwordReset: {
-          clientRoute: "PasswordResetRoute",
-        },
-      },
+
+        onAuthFailedRedirectTo: "/login",
     },
-    onAuthSucceededRedirectTo: "/",
-    onAuthFailedRedirectTo: "/login",
-  },
-  emailSender: {
-    provider: "Dummy",
-  },
-  client: {
-    rootComponent: App,
-  },
-  spec: [
-    tasksSpec,
-    tagsSpec,
-    route("LoginRoute", "/login", page(LoginPage)),
-    route("SignupRoute", "/signup", page(SignupPage)),
-    route(
-      "RequestPasswordResetRoute",
-      "/request-password-reset",
-      page(RequestPasswordResetPage),
-    ),
-    route("PasswordResetRoute", "/password-reset", page(PasswordResetPage)),
-    route(
-      "EmailVerificationRoute",
-      "/email-verification",
-      page(EmailVerificationPage),
-    ),
-  ],
+    spec: [
+        route("RootRoute", "/", page(MainPage, {
+            authRequired: true,
+        })),
+        route("SignupRoute", "/signup", page(SignupPage)),
+        route("LoginRoute", "/login", page(LoginPage)),
+        query(getTasks, { entities: ["Task"] }),
+        action(createTask, { entities: ["Task"] }),
+        action(updateTask, { entities: ["Task"] }),
+    ],
 });
