@@ -1,31 +1,18 @@
-import { action, app, page, route, query } from "@wasp.sh/spec"
-import { MainPage } from "./src/MainPage" with { type: "ref" }
-import { getTasks } from "../parth-journey-wasp/src/queries" with {type: "ref"}
-import { createTask, updateTask } from "./src/actions" with {type: "ref"}
-import { SignupPage } from "./src/SignupPage" with { type: "ref" }
-import { LoginPage } from "./src/LoginForm" with { type: "ref" }
+import { app, page, route } from "@wasp.sh/spec";
+import { JourneyPage } from "./src/pages/JourneyPage" with { type: "ref" };
 
 export default app({
-    name: "parthJourneyWasp",
-    wasp: { version: "^0.25.0" },
-    title: "Parth's Journey with Wasp",
-    head: ["<link rel='icon' href='/favicon.ico' />"],
-    auth: {
-        userEntity: "User",
-        methods: {
-            usernameAndPassword: {},
-        },
-
-        onAuthFailedRedirectTo: "/login",
+    name: "parthsJourneyWithWasp",
+    wasp: {
+        version: "^0.25.0",
     },
+    title: "Parth's Journey with Wasp",
+    head: [
+        "<link rel='preconnect' href='https://fonts.googleapis.com' />",
+        "<link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />",
+        "<link href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap' rel='stylesheet' />",
+    ],
     spec: [
-        route("RootRoute", "/", page(MainPage, {
-            authRequired: true,
-        })),
-        route("SignupRoute", "/signup", page(SignupPage)),
-        route("LoginRoute", "/login", page(LoginPage)),
-        query(getTasks, { entities: ["Task"] }),
-        action(createTask, { entities: ["Task"] }),
-        action(updateTask, { entities: ["Task"] }),
+        route("JourneyRoute", "/", page(JourneyPage)),
     ],
 });
